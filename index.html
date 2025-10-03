@@ -112,100 +112,106 @@
     </body>
 
     <script>
-    (function(){
-      // Mapeie aqui as URLs dos seus RECs
-      const TARGETS = [
-      { label:'Smartwatch', url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=smartwach+oferta+' },
-      { label:'Headphone', url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=headphone+bluetooth+oferta+' },
-      { label:'Airfryer', url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=airfryer+4l+promocao+' },
-      { label:'Cadeira Gamer', url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=cadeira+gamer+ergonomica+' },
-      { label:'Notebook', url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=notebook+promocao+' },
-      { label:'Smart TV', url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=smart+TV+4k+ofertas+' }
-      ];
-      // Se quiser passar parâmetros fixos ao widget (ex.: KWs), pode anexar: ?kw=smartwatch,descontos
-      
-      const wheel = document.getElementById('ir-wheel');
-      const labelsBox = document.getElementById('ir-labels');
-      const spin = document.getElementById('ir-spin');
-      const reset = document.getElementById('ir-reset');
-      const res = document.getElementById('ir-res');
-      const picked = document.getElementById('ir-intent');
-      const link = document.getElementById('ir-link');
+(function(){
+  // Itens e URLs
+  const TARGETS = [
+    { label:'Smartwatch',   url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=smartwach+oferta+' },
+    { label:'Headphone',    url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=headphone+bluetooth+oferta+' },
+    { label:'Airfryer',     url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=airfryer+4l+promocao+' },
+    { label:'Cadeira Gamer',url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=cadeira+gamer+ergonomica+' },
+    { label:'Notebook',     url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=notebook+promocao+' },
+    { label:'Smart TV',     url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=smart+TV+4k+ofertas+' }
+  ];
 
-       // Começa com pulso no botão de girar
-      spinBtn.classList.add('pulsing');
-      
-      // ====== Desenha fundo (fatias) e rótulos ======
-  const colors = ['#fecaca','#fde68a','#bbf7d0','#bfdbfe','#ddd6fe','#fbcfe8','#a7f3d0','#fef08a'];
+  const colors   = ['#fecaca','#fde68a','#bbf7d0','#bfdbfe','#ddd6fe','#fbcfe8','#a7f3d0','#fef08a'];
+  const wheel    = document.getElementById('ir-wheel');
+  const labelsEl = document.getElementById('ir-labels');
+  const spin     = document.getElementById('ir-spin');    // <-- usar 'spin'
+  const reset    = document.getElementById('ir-reset');   // <-- usar 'reset'
+  const res      = document.getElementById('ir-res');     // <-- usar 'res'
+  const picked   = document.getElementById('ir-intent');
+  const link     = document.getElementById('ir-link');
+
+  // COMEÇA com pulso no botão "Girar"
+  spin.classList.add('pulsing');
+
+  // Desenha roleta e labels
   function paintWheel(){
     const n = TARGETS.length;
     const step = 360 / n;
-    // conic-gradient com cores alternadas
+
+    // fundo colorido
     const parts = [];
-    for(let i=0;i<n;i++){
+    for (let i=0;i<n;i++){
       const a0 = i*step, a1 = (i+1)*step;
       const col = colors[i % colors.length];
       parts.push(`${col} ${a0}deg ${a1}deg`);
     }
     wheel.style.background = `conic-gradient(${parts.join(',')})`;
-    // rótulos
-    labelsBox.innerHTML = '';
-  const radius = (wheel.clientWidth / 2) -50; // raio útil (ajuste fino)
-  for (let i = 0; i < n; i++) {
-    const theta = i * step + step / 2; // meio da fatia
-    const el = document.createElement('div');
-    el.className = 'ir-label';
-    // empurra cada label para fora usando PX, não %
-    el.style.transform =
-      `translate(-50%,-50%) rotate(${theta}deg) translate(0, -${radius}px) rotate(${-theta}deg)`;
-    el.innerHTML = `<span>${TARGETS[i].label}</span>`;
-    labelsBox.appendChild(el);
+
+    // labels
+    labelsEl.innerHTML = '';
+    const radius = (wheel.clientWidth / 2) - 50; // ajuste fino da distância do texto
+    for (let i=0;i<n;i++){
+      const theta = i*step + step/2;
+      const el = document.createElement('div');
+      el.className = 'ir-label';
+      el.style.transform = `translate(-50%,-50%) rotate(${theta}deg) translate(0, -${radius}px) rotate(${-theta}deg)`;
+      el.innerHTML = `<span>${TARGETS[i].label}</span>`;
+      labelsEl.appendChild(el);
     }
   }
   paintWheel();
-      
-      let spinning = false;
-      
-      function pickTarget(){
-      const i = Math.floor(Math.random() * TARGETS.length);
-      return { index:i, ...TARGETS[i] };
-      }
-      
-      function spinWheel(){
-      if(spinning) return;
-      spinning = true;
-      
-      const chosen = pickTarget();
-      const sectorAngle = 360 / TARGETS.length; // 90°
-      const base = chosen.index * sectorAngle + sectorAngle/2;
-      const rounds = 5 * 360; // voltas completas
-      const target = rounds + (360 - base); // para parar com a fatia escolhida no topo
-      
-      wheel.style.transition = 'transform 2.2s cubic-bezier(.2,.7,.1,1)';
-      wheel.style.transform = `rotate(${target}deg)`;
-      
-      setTimeout(()=>{
-          spinning=false;
-          picked.textContent = TARGETS[idx].label;
-          link.href = TARGETS[idx].url;
-          resBox.hidden = false;
-          // pulso no CTA
-          link.classList.add('pulsing');
-        }, 2400);
-      }
+  window.addEventListener('resize', paintWheel);
 
-      function reset(){
-        wheel.style.transition = 'none';
-        wheel.style.transform  = 'rotate(0deg)';
-        resBox.hidden = true;
-        // volta pulso para o botão de girar
-        spinBtn.classList.add('pulsing');
-        link.classList.remove('pulsing');
-      }
+  let spinning = false;
 
-      spinBtn.addEventListener('click', spin);
-      resetBtn.addEventListener('click', reset);
-    })();
-    </script>
+  function pickTarget(){
+    const i = Math.floor(Math.random()*TARGETS.length);
+    return { index:i, ...TARGETS[i] };
+  }
+
+  function spinWheel(){
+    if (spinning) return;
+    spinning = true;
+
+    // tira pulso do botão "Girar" durante o giro
+    spin.classList.remove('pulsing');
+    link.classList.remove('pulsing');
+
+    const chosen = pickTarget();
+    const sectorAngle = 360 / TARGETS.length;
+    const base = chosen.index * sectorAngle + sectorAngle/2;
+    const rounds = 5 * 360;
+    const target = rounds + (360 - base);
+
+    wheel.style.transition = 'transform 2.2s cubic-bezier(.2,.7,.1,1)';
+    wheel.style.transform  = `rotate(${target}deg)`;
+
+    setTimeout(()=>{
+      spinning = false;
+      picked.textContent = chosen.label;  // <-- usa chosen
+      link.href = chosen.url;             // <-- usa chosen
+      res.hidden = false;
+
+      // ativa pulso no CTA "Ver ofertas"
+      link.classList.add('pulsing');
+    }, 2300);
+  }
+
+  function resetWheel(){
+    wheel.style.transition = 'none';
+    wheel.style.transform  = 'rotate(0deg)';
+    res.hidden = true;
+
+    // volta pulso para o botão "Girar"
+    spin.classList.add('pulsing');
+    link.classList.remove('pulsing');
+  }
+
+  spin.addEventListener('click', spinWheel);
+  reset.addEventListener('click', resetWheel);
+})();
+</script>
   </body>
 </html>
