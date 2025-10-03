@@ -131,6 +131,10 @@
       const res = document.getElementById('ir-res');
       const picked = document.getElementById('ir-intent');
       const link = document.getElementById('ir-link');
+
+       // Começa com pulso no botão de girar
+      spinBtn.classList.add('pulsing');
+      
       // ====== Desenha fundo (fatias) e rótulos ======
   const colors = ['#fecaca','#fde68a','#bbf7d0','#bfdbfe','#ddd6fe','#fbcfe8','#a7f3d0','#fef08a'];
   function paintWheel(){
@@ -181,20 +185,27 @@
       wheel.style.transform = `rotate(${target}deg)`;
       
       setTimeout(()=>{
-      spinning = false;
-      picked.textContent = chosen.label;
-      link.href = chosen.url;
-      res.hidden = false;
-      }, 2300);
+          spinning=false;
+          picked.textContent = TARGETS[idx].label;
+          link.href = TARGETS[idx].url;
+          resBox.hidden = false;
+          // pulso no CTA
+          link.classList.add('pulsing');
+        }, 2400);
       }
-      
-      spin.addEventListener('click', spinWheel);
-      reset.addEventListener('click', ()=>{
-      wheel.style.transition = 'none';
-      wheel.style.transform = 'rotate(0deg)';
-      res.hidden = true;
-      });
-      })();
+
+      function reset(){
+        wheel.style.transition = 'none';
+        wheel.style.transform  = 'rotate(0deg)';
+        resBox.hidden = true;
+        // volta pulso para o botão de girar
+        spinBtn.classList.add('pulsing');
+        link.classList.remove('pulsing');
+      }
+
+      spinBtn.addEventListener('click', spin);
+      resetBtn.addEventListener('click', reset);
+    })();
     </script>
   </body>
 </html>
