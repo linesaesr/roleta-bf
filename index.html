@@ -57,6 +57,21 @@
   border-radius:10px;
   white-space:nowrap;
   }
+
+ /* Pulse animation */
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+    .pulsing{animation:pulse 1.2s infinite;will-change:transform;transform:translateZ(0)}
+    @media (prefers-reduced-motion: reduce){.pulsing{animation:none}}
+
+    /* Compacto para mobile */
+    @media (max-width: 480px){
+      .ir-title h2{font-size:20px}
+      .ir-title h3{font-size:14px}
+      .ir-wheel{--size:220px;border-width:8px}
+      .ir-label{font-size:12px}
+      .ir-btn{flex:1}
+      .ir-pointer{border-top-width:16px;bottom:-8px}
+    }
     
   </style>
   </head>
@@ -105,9 +120,7 @@
       { label:'Airfryer', url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=airfryer+4l+promocao+' },
       { label:'Cadeira Gamer', url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=cadeira+gamer+ergonomica+' },
       { label:'Notebook', url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=notebook+promocao+' },
-      { label:'Smart TV', url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=smart+TV+4k+ofertas+' },
-      { label:'Caixa de som Bluetooth', url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=caixa+de+som+bluetooth+descontos+' },
-      { label:'Mouse', url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=mouse+sem+fio+promocao+' }
+      { label:'Smart TV', url:'https://cursosparainiciantes.com.br/cow-produtos-br/?keyword=smart+TV+4k+ofertas+' }
       ];
       // Se quiser passar parâmetros fixos ao widget (ex.: KWs), pode anexar: ?kw=smartwatch,descontos
       
